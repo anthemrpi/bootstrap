@@ -9,15 +9,20 @@
 
 
 
-#docker login
+sudo -u anthem docker login
+if [ $? -ne 0 ]; then echo "ERROR: Could not login to docker"; exit; fi
 
-#docker pull bgrissom/anthem:latest
+sudo -u anthem docker pull bgrissom/anthem
+if [ $? -ne 0 ]; then echo "ERROR: Could not pull docker image"; exit; fi
 
-docker run --privileged=true --restart=always -v /dev/bus/usb:/dev/bus/usb \
-                             -v /var/log/supervisor:/var/log/supervisor \
-                             -v /home/anthem/config:/home/anthem/config \
-                             -p 8080:80 \
-                             -p 8445:445 \
-                             -p 8139:139 \
-                             -i -t bgrissom/anthem:latest /bin/bash
+sudo -u anthem docker run -d --privileged=true --restart=always -v /dev/bus/usb:/dev/bus/usb \
+    -v /var/log/supervisor:/var/log/supervisor \
+    -v /home/anthem/config:/home/anthem/config \
+    -p 80:80 \
+    -p 445:445 \
+    -p 139:139 \
+    -i -t bgrissom/anthem \
+    /home/anthem/module_control/docker/start.sh
 
+# Pass the return value of above command as this script's return value
+exit $?
