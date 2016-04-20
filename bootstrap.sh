@@ -60,11 +60,6 @@ if [ $? -ne 0 ]; then echo "ERROR: Could pull remote git repository"; exit; fi
 #fi
 
 /bin/bash ./install.sh
-echo "-------------------------------------------"
-if [ $? -eq 0 ]; then
-    echo "SUCCESS: Successfully executed bootstrap";
-fi
 
-if [ $? -ne 0 ]; then
-    echo "ERROR: Failure running install.sh";
-fi
+echo "-------------------------------------------"
+echo "End of bootstrap.sh script";
