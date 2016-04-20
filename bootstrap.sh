@@ -10,8 +10,10 @@ else
     exit
 fi
 
-echo "\n\n-------------------------------------------"
+echo "-------------------------------------------"
 echo "TRYING TO GET ONLINE"
+ip route del default via 192.168.0.1
+ip route add default via 10.1.10.1
 dhclient -1 -pf /run/dhclient.p4p1.pid -lf /var/lib/dhcp/dhclient.p4p1.leases p4p1 &
 dhclient -1 -pf /run/dhclient.p1p1.pid -lf /var/lib/dhcp/dhclient.p1p1.leases p1p1 &
 
@@ -39,7 +41,7 @@ do
     fi
 
     if [ $i -eq 3 ]; then
-        echo "\n\n-------------------------------------------"
+        echo "-------------------------------------------"
         echo "ERROR: UNABLE TO GET ONLINE, PLEASE CONNECT AN ETHERNET CABLE"
         exit
     fi
@@ -58,7 +60,7 @@ if [ $? -ne 0 ]; then echo "ERROR: Could pull remote git repository"; exit; fi
 #fi
 
 /bin/bash ./install.sh
-echo "\n\n-------------------------------------------"
+echo "-------------------------------------------"
 if [ $? -eq 0 ]; then
     echo "SUCCESS: Successfully executed bootstrap";
 fi
