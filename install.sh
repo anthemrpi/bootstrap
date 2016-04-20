@@ -9,12 +9,15 @@
 
 
 
-sudo -u anthem docker login
+echo sudo -u anthem docker login
+     sudo -u anthem docker login
 if [ $? -ne 0 ]; then echo "ERROR: Could not login to docker"; exit -1; fi
 
-sudo -u anthem docker pull bgrissom/anthem
+echo sudo -u anthem docker pull bgrissom/anthem
+     sudo -u anthem docker pull bgrissom/anthem
 if [ $? -ne 0 ]; then echo "ERROR: Could not pull docker image"; exit -1; fi
 
+echo "Starting docker image..."
 sudo -u anthem docker run -d --privileged=true --restart=always -v /dev/bus/usb:/dev/bus/usb \
     -v /var/log/supervisor:/var/log/supervisor \
     -v /home/anthem/config:/home/anthem/config \
