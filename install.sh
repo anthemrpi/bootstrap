@@ -18,7 +18,9 @@ echo sudo -u anthem docker pull bgrissom/anthem
 if [ $? -ne 0 ]; then echo "ERROR: Could not pull docker image"; exit -1; fi
 
 echo "Starting docker image..."
-sudo -u anthem docker run -d --privileged=true --restart=always -v /dev/bus/usb:/dev/bus/usb \
+sudo -u anthem docker run -d --privileged=true --restart=always \
+    -v /dev/bus/usb:/dev/bus/usb \
+    -v /etc/udev/rules.d:/etc/udev/rules.d \
     -v /var/log/supervisor:/var/log/supervisor \
     -v /home/anthem/config:/home/anthem/config \
     -p 80:80 \
