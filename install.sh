@@ -27,6 +27,15 @@ fi
 
 read -p "Run the docker image? (y/n) " RESP
 if [ "$RESP" = "y" ]; then
+    sudo -u anthem ps | grep anthem > /dev/null
+    if [ $? -eq 1 ]; then
+        echo "Stopping and removing running image"
+        echo sudo -u anthem docker stop `docker ps -lq`
+        sudo -u anthem docker stop `docker ps -lq`
+        echo sudo -u anthem docker stop `docker ps -lq`
+        sudo -u anthem docker rm   `docker ps -lq`
+    fi
+
     echo "Running docker image..."
     sudo -u anthem docker run -d --privileged=true --restart=always \
         -v /dev/bus/usb:/dev/bus/usb \
@@ -38,10 +47,20 @@ if [ "$RESP" = "y" ]; then
         -p 139:139 \
         -i -t anthemdocker/anthem \
         /home/anthem/module_control/docker/start.sh
+   echo "Log out and back in to get the 'enter' alias working."
 else
     echo "Skipping docker run"
 fi
 
+read -p "Setup Django? (y/n) " RESP
+if [ "$RESP" = "y" ]; then
+    echo "Setting up Django..."
+    sudo -u anthem docker exec -it `docker ps -lq` sudo -u anthem /home/anthem/module_control/display_control/util/system_controller_setup/non_priv_setup.sh
+    echo "Restarting display, relay, lightsensor"
+    sudo -u anthem docker exec -it `docker ps -lq` supervisorctl reload
+else
+    echo "Skipping Django setup"
+fi
 
 # Pass the return value of above command as this script's return value
 exit $?
