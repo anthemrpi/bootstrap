@@ -11,14 +11,6 @@ if [ "$RESP" = "y" ]; then
         # The alias is not there, set it up
         echo alias enter=\"docker exec -it \`docker ps -lq\` /home/anthem/module_control/docker/shell.sh\" >> ~/.bashrc
     fi
-
-    # Using MySQL in a docker container in privileged mode requires disabling
-    # MySQL for apparmor.
-    if [ ! -f /etc/apparmor.d/disable/usr.sbin.mysqld ]; then
-        echo sudo cp /etc/apparmor.d/usr.sbin.mysqld /etc/apparmor.d/disable/
-             sudo cp /etc/apparmor.d/usr.sbin.mysqld /etc/apparmor.d/disable/
-        if [ $? -ne 0 ]; then echo "ERROR: Could not disable apparmor MySQL"; fi
-    fi
 else
     echo "Skipping host config"
 fi
@@ -67,6 +59,12 @@ fi
 
 read -p "Setup Django? (y/n) " RESP
 if [ "$RESP" = "y" ]; then
+    for i in $(seq 1 8);
+    do
+        echo "($i of 8) Waiting for MySQL to start..."
+        sleep 1
+    done
+
     echo "Setting up Django..."
     sudo -u anthem docker exec -it `docker ps -lq` sudo -u anthem /home/anthem/module_control/display_control/util/system_controller_setup/non_priv_setup.sh
     echo "Restarting display, relay, lightsensor"
