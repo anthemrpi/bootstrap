@@ -3,11 +3,24 @@
 # Run the Anthem docker image
 # (c) Anthem Displays, 2016
 
-# Set aliases on the host
-grep "alias enter" ~/.bashrc > /dev/null
-if [ $? -ne 0 ]; then
-    # The alias is not there, set it up
-    echo alias enter=\"docker exec -it \`docker ps -lq\` /home/anthem/module_control/docker/shell.sh\" >> ~/.bashrc
+read -p "Verify host configuration? (y/n) " RESP
+if [ "$RESP" = "y" ]; then
+    # Set aliases on the host
+    grep "alias enter" ~/.bashrc > /dev/null
+    if [ $? -ne 0 ]; then
+        # The alias is not there, set it up
+        echo alias enter=\"docker exec -it \`docker ps -lq\` /home/anthem/module_control/docker/shell.sh\" >> ~/.bashrc
+    fi
+
+    # Using MySQL in a docker container in privileged mode requires disabling
+    # MySQL for apparmor.
+    if [ ! -f /etc/apparmor.d/disable/usr.sbin.mysqld ]; then
+        echo sudo cp /etc/apparmor.d/usr.sbin.mysqld /etc/apparmor.d/disable/
+             sudo cp /etc/apparmor.d/usr.sbin.mysqld /etc/apparmor.d/disable/
+        if [ $? -ne 0 ]; then echo "ERROR: Could not disable apparmor MySQL"; fi
+    fi
+else
+    echo "Skipping host config"
 fi
 
 
