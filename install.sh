@@ -6,10 +6,17 @@
 read -p "Verify host configuration? (y/n) " RESP
 if [ "$RESP" = "y" ]; then
     # Set aliases on the host
+
+    # Remove the old enter alias (if it exists)
     grep "alias enter" ~/.bashrc > /dev/null
+    if [ $? -eq 0 ]; then
+        sed -i 's/^alias enter.*$//' ~/.bashrc
+    fi
+
+    # Add the new enter function (if necessary)
+    grep "function enter" ~/.bashrc > /dev/null
     if [ $? -ne 0 ]; then
-        # The alias is not there, set it up
-        echo alias enter=\"docker exec -it \`docker ps -lq\` /home/anthem/module_control/docker/shell.sh\" >> ~/.bashrc
+        echo "function enter { docker exec -it \$(docker ps -lq) /home/anthem/module_control/docker/shell.sh; }" >> ~/.bashrc
     fi
 else
     echo "Skipping host config"
