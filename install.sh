@@ -65,10 +65,12 @@ if [ "$RESP" = "y" ]; then
         sleep 1
     done
 
+    echo "Stopping all supervisor services"
+    sudo -u anthem docker exec -it `docker ps -lq` supervisorctl stop all
     echo "Setting up Django..."
     sudo -u anthem docker exec -it `docker ps -lq` sudo -u anthem /home/anthem/module_control/display_control/util/system_controller_setup/non_priv_setup.sh
-    echo "Restarting display, relay, lightsensor"
-    sudo -u anthem docker exec -it `docker ps -lq` supervisorctl reload
+    echo "Restarting all supervisor services"
+    sudo -u anthem docker exec -it `docker ps -lq` supervisorctl start all
 else
     echo "Skipping Django setup"
 fi
