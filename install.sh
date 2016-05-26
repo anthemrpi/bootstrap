@@ -32,13 +32,19 @@ fi
 
 read -p "Run the docker image? (y/n) " RESP
 if [ "$RESP" = "y" ]; then
-    sudo -u anthem ps | grep anthem > /dev/null
-    if [ $? -eq 1 ]; then
-        echo "Stopping and removing running image"
+    sudo -u anthem docker ps | grep anthem > /dev/null
+    if [ $? -eq 0 ]; then
+        echo "Stopping running container..."
         echo sudo -u anthem docker stop `docker ps -lq`
-        sudo -u anthem docker stop `docker ps -lq`
-        echo sudo -u anthem docker stop `docker ps -lq`
-        sudo -u anthem docker rm   `docker ps -lq`
+             sudo -u anthem docker stop `docker ps -lq`
+
+        read -p "Remove last container? (For production, always enter yes) (y/n) " RESP
+        if [ "$RESP" = "y" ]; then
+            echo sudo -u anthem docker rm   `docker ps -lq`
+                 sudo -u anthem docker rm   `docker ps -lq`
+        else
+            echo "Skipping remove last container..."
+        fi
     fi
 
     echo "Running docker image..."
