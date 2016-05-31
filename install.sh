@@ -3,8 +3,19 @@
 # Run the Anthem docker image
 # (c) Anthem Displays, 2016
 
-read -p "Verify host configuration? (y/n) " RESP
-if [ "$RESP" = "y" ]; then
+function isyes {
+    if [ "$1" = "Y" ] || [ "$1" = "y" ] || [ "$1" = "" ]; then
+        # Return 0 = true
+        return 0
+    else
+        # Return 1 = false
+        return 1
+    fi
+}
+
+
+read -p "Continue host configuration? (Y/n) Default: <Enter> " RESP
+if isyes $RESP; then
     # Set aliases on the host
 
     # Remove the old enter alias (if it exists)
@@ -23,8 +34,8 @@ else
 fi
 
 
-read -p "Pull the latest docker image? (y/n) " RESP
-if [ "$RESP" = "y" ]; then
+read -p "Continue docker image pull? (Y/n) Default: <Enter> " RESP
+if isyes $RESP; then
     echo sudo -u anthem docker login
          sudo -u anthem docker login
     if [ $? -ne 0 ]; then echo "ERROR: Could not login to docker"; exit -1; fi
@@ -37,16 +48,16 @@ else
 fi
 
 
-read -p "Run the docker image? (y/n) " RESP
-if [ "$RESP" = "y" ]; then
+read -p "Continue running the docker image? (Y/n) Default: <Enter> " RESP
+if isyes $RESP; then
     sudo -u anthem docker ps | grep anthem > /dev/null
     if [ $? -eq 0 ]; then
         echo "Stopping running container..."
         echo sudo -u anthem docker stop `docker ps -lq`
              sudo -u anthem docker stop `docker ps -lq`
 
-        read -p "Remove last container? (For production, always enter yes) (y/n) " RESP
-        if [ "$RESP" = "y" ]; then
+        read -p "Continue cleaning up (removing) last container? (Y/n) Default: <Enter> " RESP
+        if isyes $RESP; then
             echo sudo -u anthem docker rm   `docker ps -lq`
                  sudo -u anthem docker rm   `docker ps -lq`
         else
@@ -70,8 +81,9 @@ else
     echo "Skipping docker run"
 fi
 
-read -p "Setup Django? (y/n) " RESP
-if [ "$RESP" = "y" ]; then
+
+read -p "Continue setting up django? (Y/n) Default: <Enter> " RESP
+if isyes $RESP; then
     for i in $(seq 1 8);
     do
         echo "($i of 8) Waiting for MySQL to start..."
