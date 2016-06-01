@@ -27,7 +27,7 @@ if isyes $RESP; then
     # Add the new enter function (if necessary)
     grep "function enter" ~/.bashrc > /dev/null
     if [ $? -ne 0 ]; then
-        echo "function enter { docker exec -it \$(docker ps -lq) /home/anthem/module_control/docker/shell.sh; }" >> ~/.bashrc
+        echo "function enter { docker exec -it \$(docker ps -q) /home/anthem/module_control/docker/shell.sh; }" >> ~/.bashrc
     fi
 else
     echo "Skipping host config"
@@ -53,13 +53,13 @@ if isyes $RESP; then
     sudo -u anthem docker ps | grep anthem > /dev/null
     if [ $? -eq 0 ]; then
         echo "Stopping running container..."
-        echo sudo -u anthem docker stop `docker ps -lq`
-             sudo -u anthem docker stop `docker ps -lq`
+        echo sudo -u anthem docker stop `docker ps -q`
+             sudo -u anthem docker stop `docker ps -q`
 
         read -p "Continue cleaning up (removing) last container? (Y/n) Default: <Enter> " RESP
         if isyes $RESP; then
-            echo sudo -u anthem docker rm   `docker ps -lq`
-                 sudo -u anthem docker rm   `docker ps -lq`
+            echo sudo -u anthem docker rm   `docker ps -q`
+                 sudo -u anthem docker rm   `docker ps -q`
         else
             echo "Skipping remove last container..."
         fi
@@ -91,11 +91,11 @@ if isyes $RESP; then
     done
 
     echo "Stopping all supervisor services"
-    sudo -u anthem docker exec -it `docker ps -lq` supervisorctl stop all
+    sudo -u anthem docker exec -it `docker ps -q` supervisorctl stop all
     echo "Setting up Django..."
-    sudo -u anthem docker exec -it `docker ps -lq` sudo -u anthem /home/anthem/module_control/display_control/util/system_controller_setup/non_priv_setup.sh
+    sudo -u anthem docker exec -it `docker ps -q` sudo -u anthem /home/anthem/module_control/display_control/util/system_controller_setup/non_priv_setup.sh
     echo "Restarting all supervisor services"
-    sudo -u anthem docker exec -it `docker ps -lq` supervisorctl start all
+    sudo -u anthem docker exec -it `docker ps -q` supervisorctl start all
 else
     echo "Skipping Django setup"
 fi
