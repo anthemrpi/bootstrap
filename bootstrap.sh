@@ -50,6 +50,7 @@ done
 cd /home/anthem/bootstrap/
 if [ $? -ne 0 ]; then echo "ERROR: Could not go to /home/anthem/bootstrap/"; exit; fi
 
+ntpdate ntp.ubuntu.com
 sudo -u anthem git pull
 if [ $? -ne 0 ]; then echo "ERROR: Could pull remote git repository"; exit; fi
 
