@@ -60,7 +60,12 @@ if [ $? -ne 0 ]; then echo "ERROR: Could pull remote git repository"; exit; fi
 #    if [ $? -ne 0 ]; then echo "ERROR: Could pull remote git repository"; exit; fi
 #fi
 
-/bin/bash ./install.sh
+# install.sh logging
+# stdbuf: Keep output unbuffered
+# 2>&1: Merge STDERR into STDOUT
+# tee: Print to STDOUT and a file
+echo "Launching install.sh"
+stdbuf -o 0 bash ./install.sh 2>&1 | tee -a ./install.log
 
 echo "-------------------------------------------"
 echo "End of bootstrap.sh script";
