@@ -7,6 +7,10 @@
 # Input is possible, but a two-second timeout on most commands
 # defaults to continue
 
+cd /home/anthem/bootstrap
 git pull
 scp bootstrap.sh anthem@172.24.1.94:~/bootstrap/
 ssh anthem@172.24.1.94 bash ~/bootstrap/bootstrap.sh
+#pause
+echo "An install log has been saved to the system controller as /home/anthem/install.log"
+read -p "Done. Press <Enter> to close the terminal."
