@@ -81,7 +81,7 @@ if [ $? -ne 0 ]; then echo "ERROR: Could pull remote git repository"; exit; fi
 # 2>&1: Merge STDERR into STDOUT
 # tee: Print to STDOUT and a file
 echo "Launching install.sh"
-stdbuf -o 0 bash ./install.sh 2>&1 | tee -a ./install.log
+stdbuf -o 0 bash ./install.sh 2>&1 | tee -a /home/anthem/config/install.log
 
 echo "-------------------------------------------"
-echo "End of bootstrap.sh script";
+echo "End of bootstrap.sh script. All output was logged to /home/anthem/config/install.log";
