@@ -82,6 +82,9 @@ else
     echo "Skipping docker run"
 fi
 
+# Set the display's serial number.
+read -p "Please enter this display's serial number: " RESP
+echo "print Display.objects.all().update(uuid=$RESP)" | docker exec -i $(docker ps -lq) sudo -u anthem /home/anthem/module_control/display_control/djangoShell.py
 
 # There's no need to do this with the new image; MySQL is already fully configured.
 # (The new procedure is to run non_priv_setup before imaging,
