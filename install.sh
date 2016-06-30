@@ -83,6 +83,7 @@ else
 fi
 
 # Set the display's serial number.
+echo "If the SN is set, don't enter anything and just hit <Return>"
 read -p "Please enter this display's serial number: " RESP
 echo "print Display.objects.all().update(uuid=$RESP)" | docker exec -i $(docker ps -lq) sudo -u anthem /home/anthem/module_control/display_control/djangoShell.py
 
