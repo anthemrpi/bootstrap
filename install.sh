@@ -87,26 +87,19 @@ echo "If the SN is set, don't enter anything and just hit <Return>"
 read -p "Please enter this display's serial number: " RESP
 echo "print Display.objects.all().update(uuid=$RESP)" | docker exec -i $(docker ps -lq) sudo -u anthem /home/anthem/module_control/display_control/djangoShell.py
 
-# There's no need to do this with the new image; MySQL is already fully configured.
-# (The new procedure is to run non_priv_setup before imaging,
-#  so that setting up new host machines is faster.)
-#read -t 2 -p "Continue setting up django? (Y/n) Default: <Enter> " RESP
-#if isyes $RESP; then
-#    for i in $(seq 1 8);
-#    do
-#        echo "($i of 8) Waiting for MySQL to start..."
-#        sleep 1
-#    done
-#
-#    echo "Stopping all supervisor services"
-#    sudo -u anthem docker exec -it `docker ps -q` supervisorctl stop all
-#    echo "Setting up Django..."
-#    sudo -u anthem docker exec -it `docker ps -q` sudo -u anthem /home/anthem/module_control/display_control/util/system_controller_setup/non_priv_setup.sh
-#    echo "Restarting all supervisor services"
-#    sudo -u anthem docker exec -it `docker ps -q` supervisorctl start all
-#else
-#    echo "Skipping Django setup"
-#fi
+# Create static files: display_config.ini and docker_version.txt.
+# Create the display_config.ini file if it doesn't exist.
+if [ ! -f /home/anthem/config/display_config.ini ]; then
+    echo "[CORE]"         > /home/anthem/config/display_config.ini
+    echo "serial = $RESP" >>/home/anthem/config/display_config.ini
+    echo "rows = 8"       >>/home/anthem/config/display_config.ini
+    echo "columns = 16"   >>/home/anthem/config/display_config.ini
+    echo "three_bay = 0"  >>/home/anthem/config/display_config.ini
+fi
+
+# Inject the image SHA information into the container.
+docker inspect --format='{{.Image}}' `docker ps -lq` \
+    > /home/anthem/config/docker_version.txt
 
 # Pass the return value of above command as this script's return value
 exit $?
