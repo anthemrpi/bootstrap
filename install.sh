@@ -41,8 +41,8 @@ if isyes $RESP; then
          sudo -u anthem docker login
     if [ $? -ne 0 ]; then echo "ERROR: Could not login to docker"; exit -1; fi
 
-    echo sudo -u anthem docker pull anthemdocker/anthem
-         sudo -u anthem docker pull anthemdocker/anthem
+    echo sudo -u anthem docker pull anthemdocker/anthem:v0.1.0
+         sudo -u anthem docker pull anthemdocker/anthem:v0.1.0
     if [ $? -ne 0 ]; then echo "ERROR: Could not pull docker image"; exit -1; fi
 else
     echo "Skipping docker pull"
@@ -75,7 +75,7 @@ if isyes $RESP; then
         -p 80:80 \
         -p 445:445 \
         -p 139:139 \
-        -i -t anthemdocker/anthem \
+        -i -t anthemdocker/anthem:v0.1.0 \
         /home/anthem/module_control/docker/start.sh
 
 else
